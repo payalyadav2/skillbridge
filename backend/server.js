@@ -14,7 +14,7 @@ dotenv.config();
 const connectDB = require('./src/config/db');
 const { initializeSocket } = require('./src/socket/socketHandler');
 const errorHandler = require('./src/middleware/errorHandler');
-const rateLimiter = require('./src/middleware/rateLimiter');
+const { rateLimiter } = require('./src/middleware/rateLimiter');
 
 // Route imports
 const authRoutes = require('./src/routes/authRoutes');
