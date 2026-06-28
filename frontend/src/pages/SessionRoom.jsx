@@ -9,6 +9,9 @@ const ICE_SERVERS = {
   iceServers: [
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'turn:photoframe.metered.live:80', username: '7d1c67e92343682de8e1a766', credential: 'sUwlHRSttRCM9OOs' },
+    { urls: 'turn:photoframe.metered.live:443', username: '7d1c67e92343682de8e1a766', credential: 'sUwlHRSttRCM9OOs' },
+    { urls: 'turns:photoframe.metered.live:443?transport=tcp', username: '7d1c67e92343682de8e1a766', credential: 'sUwlHRSttRCM9OOs' },
   ],
 };
 
@@ -16,7 +19,7 @@ const SessionRoom = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
   const { user } = useSelector(s => s.auth);
-  const { socket, joinRoom, leaveRoom, sendWebRTCOffer, sendWebRTCAnswer, sendICECandidate, toggleAudio, toggleVideo, endCall } = useSocket();
+  const { socket, joinRoom, leaveRoom, sendOffer, sendAnswer, sendIceCandidate, toggleAudio, toggleVideo, endCall } = useSocket();
 
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
@@ -58,22 +61,23 @@ const SessionRoom = () => {
     };
     setupMedia();
 
-    socket.on('user_joined', async ({ userId, userName, socketId }) => {
-      if (userId === user._id) return;
-      setRemoteUser({ id: userId, name: userName, socketId });
-      setRemotePeerId(socketId);
-      await createOffer(socketId);
+    socket.on('peer_joined', async ({ peerId, userId: peerId_userId, user: peerUser }) => {
+      if (peerId_userId === user._id) return;
+      setRemoteUser({ id: peerId_userId, name: peerUser?.name, socketId: peerId });
+      setRemotePeerId(peerId);
+      await createOffer(peerId);
     });
-    socket.on('webrtc_offer', async ({ offer, from }) => {
-      setRemotePeerId(from);
-      await handleOffer(offer, from);
+    socket.on('webrtc_offer', async ({ offer, fromSocketId, fromUser }) => {
+      setRemotePeerId(fromSocketId);
+      if (fromUser) setRemoteUser({ name: fromUser.name });
+      await handleOffer(offer, fromSocketId);
     });
     socket.on('webrtc_answer', async ({ answer }) => {
       await peerConnectionRef.current?.setRemoteDescription(new RTCSessionDescription(answer));
       setCallState('connected');
       startTimer();
     });
-    socket.on('ice_candidate', async ({ candidate }) => {
+    socket.on('webrtc_ice_candidate', async ({ candidate }) => {
       try { await peerConnectionRef.current?.addIceCandidate(new RTCIceCandidate(candidate)); } catch {}
     });
     socket.on('peer_audio_toggled', ({ enabled }) => setRemoteMuted(!enabled));
@@ -82,7 +86,7 @@ const SessionRoom = () => {
 
     return () => {
       cleanup();
-      ['user_joined','webrtc_offer','webrtc_answer','ice_candidate','peer_audio_toggled','call_ended','user_left'].forEach(e => socket.off(e));
+      ['peer_joined','webrtc_offer','webrtc_answer','webrtc_ice_candidate','peer_audio_toggled','call_ended','user_left'].forEach(e => socket.off(e));
     };
   }, [socket, user, roomId]);
 
@@ -108,7 +112,7 @@ const SessionRoom = () => {
       startTimer();
     };
     pc.onicecandidate = (event) => {
-      if (event.candidate) sendICECandidate({ roomId, candidate: event.candidate, to: targetSocketId });
+      if (event.candidate) sendIceCandidate({ candidate: event.candidate, roomId, targetSocketId });
     };
     pc.onconnectionstatechange = () => {
       if (['disconnected','failed','closed'].includes(pc.connectionState)) setCallState('ended');
@@ -121,7 +125,7 @@ const SessionRoom = () => {
     const pc = createPeerConnection(targetSocketId);
     const offer = await pc.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true });
     await pc.setLocalDescription(offer);
-    sendWebRTCOffer({ roomId, offer, to: targetSocketId });
+    sendOffer({ roomId, offer, targetSocketId });
   };
 
   const handleOffer = async (offer, from) => {
@@ -129,7 +133,7 @@ const SessionRoom = () => {
     await pc.setRemoteDescription(new RTCSessionDescription(offer));
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
-    sendWebRTCAnswer({ roomId, answer, to: from });
+    sendAnswer({ answer, targetSocketId: from, roomId });
   };
 
   const startTimer = () => {
@@ -174,11 +178,19 @@ const SessionRoom = () => {
     } catch { toast.error('Screen share failed'); }
   };
 
-  const handleEndCall = () => {
+  const handleEndCall = async () => {
     endCall(roomId);
     leaveRoom(roomId);
     cleanup();
     setCallState('ended');
+    // Session ko completed mark karo
+    if (sessionInfo?.session?.id) {
+      try {
+        await api.put('/sessions/' + sessionInfo.session.id + '/end', {});
+      } catch (err) {
+        console.warn('Session end update failed:', err.message);
+      }
+    }
   };
 
   const formatTime = (s) => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;

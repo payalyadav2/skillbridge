@@ -155,15 +155,16 @@ exports.endSession = asyncHandler(async (req, res) => {
   const session = await Session.findById(req.params.id);
   if (!session) return sendError(res, 404, 'Not found');
 
-  if (session.host.toString() !== req.user._id.toString()) {
-    return sendError(res, 403, 'Only the host can end the session');
-  }
+  const isParticipant =
+    session.host.toString() === req.user._id.toString() ||
+    session.participant.toString() === req.user._id.toString();
+  if (!isParticipant) return sendError(res, 403, 'Not authorized to end session');
 
   session.status = 'completed';
   session.endedAt = new Date();
-  session.actualDuration = Math.round(
-    (session.endedAt - session.startedAt) / (1000 * 60)
-  );
+  session.actualDuration = session.startedAt 
+    ? Math.round((session.endedAt - session.startedAt) / (1000 * 60))
+    : 0;
   if (recap) session.recap = recap;
   await session.save();
 
