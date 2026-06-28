@@ -108,6 +108,28 @@ exports.addSkillOffered = asyncHandler(async (req, res) => {
   user.skillsOffered.push({ name, category, level, description, yearsOfExperience });
   await user.save();
 
+  // Also save to Skills collection for Browse Skills page
+  try {
+    const Skill = require('../models/Skill');
+    const skillExists = await Skill.findOne({ 
+      name: new RegExp(`^${name}$`, 'i'), 
+      owner: req.user._id 
+    });
+    if (!skillExists) {
+      await Skill.create({
+        name,
+        category: category || 'Other',
+        level: level || 'beginner',
+        description: description || '',
+        owner: req.user._id,
+        type: 'offered',
+        exchangePreference: user.preferences?.exchangePreference || 'both',
+      });
+    }
+  } catch (err) {
+    console.warn('Skill collection save failed:', err.message);
+  }
+
   await achievementService.checkAndAward(user._id, 'skill_added');
 
   return sendSuccess(res, 201, 'Skill added', { skillsOffered: user.skillsOffered });
