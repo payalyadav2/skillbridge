@@ -34,12 +34,10 @@ exports.register = asyncHandler(async (req, res) => {
   });
 
   // Send verification email
-  const verificationUrl = `${process.env.CLIENT_URL}/verify-email?token=${verificationToken}&id=${user._id}`;
-  try {
-    await emailService.sendVerificationEmail(user, verificationUrl);
-  } catch (emailError) {
-    console.warn('Verification email failed to send:', emailError.message);
-  }
+  const verificationUrl = `${process.env.CLIENT_URL}/skillbridge/verify-email?token=${verificationToken}&id=${user._id}`;
+emailService.sendVerificationEmail(user, verificationUrl).catch(err =>
+  console.warn('Verification email failed:', err.message)
+);
 
   // Check achievements
   await achievementService.checkAndAward(user._id, 'profile_complete');
