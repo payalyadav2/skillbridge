@@ -196,7 +196,7 @@ const AppContent = () => {
 };
 
 const App = () => (
-  <BrowserRouter>
+  <BrowserRouter basename="/skillbridge">
     <SocketProvider>
       <AppContent />
     </SocketProvider>
