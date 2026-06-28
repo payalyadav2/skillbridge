@@ -5,6 +5,26 @@ const ICE_SERVERS = {
   iceServers: [
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },
+    {
+      urls: 'turn:photoframe.metered.live:80',
+      username: '7d1c67e92343682de8e1a766',
+      credential: 'sUwlHRSttRCM9OOs',
+    },
+    {
+      urls: 'turn:photoframe.metered.live:80?transport=tcp',
+      username: '7d1c67e92343682de8e1a766',
+      credential: 'sUwlHRSttRCM9OOs',
+    },
+    {
+      urls: 'turn:photoframe.metered.live:443',
+      username: '7d1c67e92343682de8e1a766',
+      credential: 'sUwlHRSttRCM9OOs',
+    },
+    {
+      urls: 'turns:photoframe.metered.live:443?transport=tcp',
+      username: '7d1c67e92343682de8e1a766',
+      credential: 'sUwlHRSttRCM9OOs',
+    },
   ],
 }
 
