@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- ── Primary SEO ──────────────────────────────────────────────────── -->
+    <title>SkillBridge | Trade Skills, Not Money — AI-Powered Skill Exchange</title>
+    <meta name="description" content="SkillBridge lets you exchange skills with people in your community — teach what you know, learn what you want. Free, AI-powered, no money involved." />
+    <meta name="keywords" content="skill exchange, skill trade, learn skills, teach skills, community learning, barter skills, AI matching, local skills" />
+    <meta name="author" content="SkillBridge" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#7C3AED" />
+    <link rel="canonical" href="https://skillbridge.app/" />
+
+    <!-- ── Open Graph (Facebook / LinkedIn / WhatsApp) ──────────────────── -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SkillBridge" />
+    <meta property="og:title" content="SkillBridge — Trade Skills, Not Money" />
+    <meta property="og:description" content="Exchange skills with your community. Teach what you know, learn what you want. AI-powered matching, free forever." />
+    <meta property="og:url" content="https://skillbridge.app/" />
+    <meta property="og:image" content="https://skillbridge.app/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- ── Twitter Card ──────────────────────────────────────────────────── -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@skillbridge" />
+    <meta name="twitter:title" content="SkillBridge — Trade Skills, Not Money" />
+    <meta name="twitter:description" content="Exchange skills with your community. AI-powered matching, free forever." />
+    <meta name="twitter:image" content="https://skillbridge.app/og-image.jpg" />
+
+    <!-- ── Security Headers (CSP via meta — full headers go in server) ───── -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(self), geolocation=(self)" />
+
+    <!-- ── PWA / Icons ───────────────────────────────────────────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- ── Fonts (preconnect + display=swap for performance) ─────────────── -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+    <!-- ── Preload critical assets ───────────────────────────────────────── -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&display=swap" />
+
+    <!-- ── JSON-LD Structured Data ───────────────────────────────────────── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SkillBridge",
+      "url": "https://skillbridge.app",
+      "description": "AI-powered local skill exchange platform. Trade skills directly — teach what you know, learn what you want.",
+      "applicationCategory": "EducationApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "SkillBridge"
+      }
+    }
+    </script>
+
+    <!-- ── Critical inline CSS (prevent FOUC) ────────────────────────────── -->
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+      body {
+        background: #020010;
+        color: #F8FAFC;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        overflow-x: hidden;
+      }
+      #root { min-height: 100vh; }
+      /* Page load fade */
+      body { animation: pageLoad 0.3s ease; }
+      @keyframes pageLoad { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+  </head>
+
+  <body>
+    <!-- No-JS fallback -->
+    <noscript>
+      <div style="text-align:center;padding:40px;font-family:sans-serif;background:#020010;color:#F8FAFC;min-height:100vh;display:flex;align-items:center;justify-content:center;">
+        <div>
+          <h1>🤝 SkillBridge</h1>
+          <p>Please enable JavaScript to use SkillBridge.</p>
+        </div>
+      </div>
+    </noscript>
+
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
