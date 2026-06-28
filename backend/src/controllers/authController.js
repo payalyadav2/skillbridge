@@ -28,6 +28,7 @@ exports.register = asyncHandler(async (req, res) => {
     name: name.trim(),
     email: email.toLowerCase().trim(),
     password,
+    isEmailVerified: true,
     emailVerificationToken: hashedToken,
     emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
   });
