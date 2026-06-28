@@ -109,18 +109,19 @@ exports.addSkillOffered = asyncHandler(async (req, res) => {
   await user.save();
 
   // Also save to Skills collection for Browse Skills page
-  try {
+  // Also save to Skills collection for Browse Skills page
+try {
     const Skill = require('../models/Skill');
     const skillExists = await Skill.findOne({ 
-      name: new RegExp(`^${name}$`, 'i'), 
+      title: new RegExp(`^${name}$`, 'i'), 
       owner: req.user._id 
     });
     if (!skillExists) {
       await Skill.create({
-        name,
+        title: name,
         category: category || 'Other',
-        level: level || 'beginner',
-        description: description || '',
+        level: level || 'intermediate',
+        description: description || `I offer ${name} skills and am open to exchange.`,
         owner: req.user._id,
         type: 'offered',
         exchangePreference: user.preferences?.exchangePreference || 'both',
