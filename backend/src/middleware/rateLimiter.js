@@ -27,4 +27,11 @@ const refreshLimiter = rateLimit({
   message: { success: false, message: 'Too many refresh attempts.' },
 });
 
-module.exports = { rateLimiter, authLimiter, refreshLimiter };
+const aiLimiter = rateLimit({
+  ...options,
+  windowMs: 60 * 1000,
+  max: 10,
+  message: { success: false, message: 'Too many AI requests, please slow down.' },
+});
+
+module.exports = { rateLimiter, authLimiter, refreshLimiter, aiLimiter };
