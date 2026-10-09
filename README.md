@@ -462,4 +462,4 @@ MIT License — feel free to use this for learning and commercial projects.
 
 ---
 
-Built with ❤️ by Yamak Digital — for SkillBridge
+Built with ❤️ by Payal — for SkillBridge
